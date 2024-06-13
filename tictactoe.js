@@ -45,6 +45,7 @@ function Gameboard() {
         board[row][column].changeValue(player);
     };
 
+    // For checking the value in console
     const printBoard = () => {
         const boardWithCellValues = board.map((row) => row.map((column) => column.getValue()));
         console.log(boardWithCellValues);
@@ -69,6 +70,7 @@ function Cell() {
         value = player;
     };
 
+    // Get value of the cell
     const getValue = () => value;
 
     return {
@@ -94,12 +96,15 @@ function GameController(playerX = "Player X", playerO = "Player O") {
     let activePlayer = players[0];
     let gameActive = true;
 
+    // This function is for switching between player
     const switchPlayerTurn = () => {
         activePlayer = (activePlayer === players[0]) ? players[1] : players[0];
     };
 
+    // Select current active player
     const getActivePlayer = () => activePlayer;
 
+    // Helpful for checking board condition on console
     const printNewRound = () => {
         board.printBoard();
         console.log(`${getActivePlayer().name}'s turn.`);
@@ -108,13 +113,14 @@ function GameController(playerX = "Player X", playerO = "Player O") {
     function checkWinner(board, playerValue) {
         // Flatten the board to simplify index-based winning condition checks
         const flatBoard = board.flat().map(cell => cell.getValue());
-    
+        
+        // For every winning conditions, we check the board if it fulfills any of the condition
         return WINNING_CONDITIONS.some(condition => 
             condition.every(index => flatBoard[index] === playerValue)
         );
     }
 
-    const playRound = (row, column) => {
+    const playRound = (row, column) => {        
         if (!gameActive) {
             console.log("Game is over. Please reset the game to play again.");
             return;
@@ -129,6 +135,12 @@ function GameController(playerX = "Player X", playerO = "Player O") {
             console.log(`${getActivePlayer().name} wins!`);
             gameActive = false;
             return;
+        } else if (board.getBoard().flat().every(element => element.getValue() !== 0)) {
+            // Check if all elements' values in the board is either 1 or 2 and no winning conditions are fulfilled, AKA tie
+            board.printBoard();
+            console.log(`Game ties.`);
+            gameActive = false;
+            return;
         }
         
         switchPlayerTurn();
@@ -139,7 +151,6 @@ function GameController(playerX = "Player X", playerO = "Player O") {
         board = Gameboard();
         activePlayer = players[0];
         gameActive = true;
-        printNewRound();
     }
 
     printNewRound();
@@ -203,7 +214,6 @@ function ScreenController() {
     resetDiv.addEventListener("click", () => {
         game.resetGame();
         game = GameController();
-        game.printBoard();
         updateScreen();
     });
   
