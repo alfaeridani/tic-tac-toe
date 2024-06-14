@@ -93,7 +93,7 @@ function GameController(playerX = "Player X", playerO = "Player O") {
         }
     ];
 
-    let activePlayer = players[0];
+    let activePlayer = players[Math.floor(Math.random() * 2)];
     let gameActive = true;
 
     // This function is for switching between player
@@ -149,13 +149,12 @@ function GameController(playerX = "Player X", playerO = "Player O") {
 
     const resetGame = () => {
         board = Gameboard();
-        activePlayer = players[0];
-        gameActive = true;
     }
 
     printNewRound();
 
     return {
+        checkWinner,
         playRound,
         getActivePlayer,
         getBoard: board.getBoard,
@@ -177,10 +176,16 @@ function ScreenController() {
         // get the newest version of the board and player turn
         const board = game.getBoard();
         const activePlayer = game.getActivePlayer();
+        const checkWinner = game.checkWinner(board, activePlayer.value);
     
         // Display player's turn
-        playerTurnDiv.textContent = `${activePlayer.name}'s turn...`
-    
+        if (checkWinner) {
+            playerTurnDiv.textContent = `${activePlayer.name} win!`;
+        } else if (board.flat().every(element => element.getValue() !== 0) && checkWinner === false) {
+            playerTurnDiv.textContent = `Game ties.`;
+        } else {
+            playerTurnDiv.textContent = `${activePlayer.name}'s turn...`
+        }
         // Render board squares
         board.forEach((row, rowIndex) => {
             row.forEach((cell, columnIndex) => {
