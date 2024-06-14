@@ -197,6 +197,9 @@ function ScreenController() {
             cellButton.dataset.row = rowIndex;
             cellButton.dataset.column = columnIndex;
             const cellValue = cell.getValue();
+            if (cellValue === 1 || cellValue === 2) {
+                cellButton.classList.add("filled");
+            }
             cellButton.textContent = cellValue === 1 ? "X" : cellValue === 2 ? "O" : "";
             boardDiv.appendChild(cellButton);
             })
